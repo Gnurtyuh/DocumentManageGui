@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.project.gui.controller.DashboardController"
+            stylesheets="@dashboard.css"
+            prefWidth="850" prefHeight="900">
+
+    <!-- Nền gradient nhẹ -->
+    <AnchorPane styleClass="dashboard-bg" prefWidth="850" prefHeight="900"/>
+
+    <!-- Header -->
+    <HBox layoutX="50" layoutY="50" spacing="15" alignment="CENTER_LEFT">
+        <ImageView fitHeight="42" fitWidth="42" preserveRatio="true">
+            <image>
+                <Image url="@analytics.png" />
+            </image>
+        </ImageView>
+        <VBox>
+            <Label text="Bảng điều khiển" styleClass="dashboard-title"/>
+            <Label text="Theo dõi mọi hoạt động của bạn" styleClass="dashboard-subtitle"/>
+        </VBox>
+    </HBox>
+
+    <!-- Đồng hồ -->
+    <Label fx:id="clockLabel" layoutX="700" layoutY="55" styleClass="clock-label"/>
+
+    <!-- Nút chuông -->
+    <Button fx:id="notifyButton" layoutX="770" layoutY="50" styleClass="notify-btn">
+        <graphic>
+            <ImageView fitHeight="28" fitWidth="28" preserveRatio="true">
+                <image>
+                    <Image url="@bell_blue.png"/>
+                </image>
+            </ImageView>
+        </graphic>
+    </Button>
+
+    <!-- Hộp thông báo -->
+    <VBox fx:id="notificationBox" layoutX="600" layoutY="90" spacing="8" visible="false"
+          styleClass="notification-box">
+        <Label text="✅ Đã gửi 3 tệp thành công hôm nay!"/>
+        <Label text="📥 2 tệp mới đã được nhận."/>
+        <Label text="⚙️ Sao lưu tự động lúc 23:00."/>
+    </VBox>
+
+    <!-- Thống kê -->
+    <HBox alignment="CENTER" spacing="40" layoutX="100" layoutY="300">
+        <VBox alignment="CENTER" spacing="12" styleClass="stat-card">
+            <ImageView fitHeight="55" fitWidth="55" preserveRatio="true">
+                <image>
+                    <Image url="@upload_blue.png"/>
+                </image>
+            </ImageView>
+            <Label text="Tệp đã gửi" styleClass="stat-title"/>
+            <Label fx:id="sentLabel" text="25" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox alignment="CENTER" spacing="12" styleClass="stat-card">
+            <ImageView fitHeight="55" fitWidth="55" preserveRatio="true">
+                <image>
+                    <Image url="@download_blue.png"/>
+                </image>
+            </ImageView>
+            <Label text="Tệp đã nhận" styleClass="stat-title"/>
+            <Label fx:id="receivedLabel" text="12" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox alignment="CENTER" spacing="12" styleClass="stat-card">
+            <ImageView fitHeight="55" fitWidth="55" preserveRatio="true">
+                <image>
+                    <Image url="@users_blue.png"/>
+                </image>
+            </ImageView>
+            <Label text="Người dùng" styleClass="stat-title"/>
+            <Label text="5" styleClass="stat-value"/>
+        </VBox>
+    </HBox>
+
+</AnchorPane>

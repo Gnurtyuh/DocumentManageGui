@@ -1,0 +1,99 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #ffffff;
+}
+
+.title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #000000;
+}
+
+.subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+}
+
+.section {
+    -fx-background-color: #f8fbff;
+    -fx-padding: 20;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-pref-width: 500;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0a5efb;
+}
+
+.btn-primary {
+    -fx-background-color: #0a5efb;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 25;
+}
+
+.btn-secondary {
+    -fx-background-color: white;
+    -fx-border-color: #cfd5e3;
+    -fx-text-fill: #0a5efb;
+    -fx-background-radius: 6;
+    -fx-padding: 8 25;
+}
+
+.file-box {
+    -fx-border-color: #d0e3ff;
+    -fx-border-style: dashed;
+    -fx-border-radius: 8;
+    -fx-padding: 30;
+    -fx-background-color: #f2f7ff;
+}
+
+.btn-file {
+    -fx-background-color: #0a5efb;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-font-weight: bold;
+}
+
+.note {
+    -fx-text-fill: #333333;
+}
+
+.desc {
+    -fx-text-fill: #999999;
+    -fx-font-size: 12px;
+}
+
+.btn-eye {
+    -fx-background-color: transparent;
+    -fx-font-size: 16px;
+}
+
+.btn-download, .btn-send {
+    -fx-background-radius: 6;
+    -fx-font-weight: bold;
+    -fx-padding: 8 25;
+}
+
+.btn-download {
+    -fx-background-color: #e6f0ff;
+    -fx-text-fill: #0a5efb;
+}
+
+.btn-send {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+}
+
+.note-box {
+    -fx-pref-width: 450;
+    -fx-font-size: 13px;
+    -fx-padding: 5;
+    -fx-border-color: #cfd5e3;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 6;
+}

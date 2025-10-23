@@ -1,0 +1,66 @@
+/* Nền tổng thể */
+.background {
+    -fx-background-color: linear-gradient(to bottom right, #4e54c8, #8f94fb);
+}
+
+/* Khung login chính */
+.login-box {
+    -fx-background-color: white;
+    -fx-padding: 30;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 15, 0, 0, 5);
+}
+
+/* Tiêu đề */
+.title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4e54c8;
+}
+
+/* Trường nhập liệu */
+.input-field {
+    -fx-pref-width: 300;
+    -fx-pref-height: 40;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-background-color: #f0f2f5;
+    -fx-border-color: transparent;
+    -fx-padding: 0 10 0 10;
+    -fx-font-size: 14px;
+}
+
+/* Khi người dùng click vào */
+.input-field:focused {
+    -fx-border-color: #4e54c8;
+    -fx-background-color: white;
+}
+
+/* Nút đăng nhập */
+.login-btn {
+    -fx-background-color: linear-gradient(to right, #4e54c8, #8f94fb);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-pref-width: 300;
+    -fx-pref-height: 40;
+    -fx-cursor: hand;
+}
+
+.login-btn:hover {
+    -fx-background-color: linear-gradient(to right, #5f64d3, #9da2ff);
+}
+
+/* Nút con mắt */
+.eye-btn {
+    -fx-background-color: transparent;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+}
+
+/* Dòng thông báo lỗi */
+.error-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}

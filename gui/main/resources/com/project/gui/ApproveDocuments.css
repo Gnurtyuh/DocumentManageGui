@@ -1,0 +1,75 @@
+.root {
+    -fx-background-color: #f8fafd;
+}
+
+/* Tiêu đề và mô tả */
+.title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555;
+}
+
+.subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #777;
+}
+
+/* Danh sách và thẻ tài liệu */
+.scroll-box {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.doc-list {
+    -fx-padding: 15;
+}
+
+.document-card {
+    -fx-background-color: white;
+    -fx-padding: 25;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+    -fx-pref-width: 650;
+}
+
+.document-card Label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+/* Nút thao tác */
+.btn-approve {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-pref-width: 120;
+}
+
+.btn-approve:hover {
+    -fx-background-color: #218838;
+}
+
+.btn-reject {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-pref-width: 120;
+}
+
+.btn-reject:hover {
+    -fx-background-color: #c82333;
+}
+
+.btn-view {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-pref-width: 120;
+}
+
+.btn-view:hover {
+    -fx-background-color: #0069d9;
+}

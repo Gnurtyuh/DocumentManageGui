@@ -1,0 +1,62 @@
+    /* Toàn bộ giao diện */
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* Thanh bên trái */
+.side-ankerpane {
+    -fx-background-color: linear-gradient(to bottom, #2c3e50, #34495e);
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 30px 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);
+}
+
+/* Khối tiêu đề trong sidebar */
+.inner-pane {
+    -fx-background-color: transparent;
+}
+
+/* Nút menu */
+.menu-button {
+    -fx-background-color: linear-gradient(to bottom right, #4a90e2, #357ABD);
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0, 0, 2);
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.menu-button:hover {
+    -fx-background-color: linear-gradient(to bottom right, #5dade2, #3498db);
+    -fx-translate-x: 3px;
+}
+
+/* Khu vực nội dung chính */
+.main-content {
+    -fx-background-color: #f4f6f7;
+    -fx-padding: 40px;
+}
+
+/* “Card” hiển thị nội dung */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 4);
+    -fx-padding: 20px;
+}
+
+/* Tiêu đề lớn */
+.label-title {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+/* Tiêu đề phụ */
+.label-subtitle {
+    -fx-text-fill: #16a085;
+    -fx-font-size: 14px;
+}

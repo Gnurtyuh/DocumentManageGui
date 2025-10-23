@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<HBox fx:id="root"
+      xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.project.gui.controller.PrimaryController"
+      prefHeight="900.0"
+      prefWidth="1200.0"
+      stylesheets="@style.css">
+
+   <children>
+      <VBox prefHeight="900.0" prefWidth="250.0" spacing="15.0">
+         <children>
+            <AnchorPane fx:id="side_ankerpane"
+                        prefHeight="900.0"
+                        prefWidth="250.0"
+                        styleClass="side-ankerpane">
+
+               <children>
+
+                  <!-- LOGO + TIÊU ĐỀ -->
+                  <Pane fx:id="inner_pane"
+                        layoutX="10.0"
+                        layoutY="30.0"
+                        prefHeight="80.0"
+                        prefWidth="230.0"
+                        styleClass="inner-pane">
+                     <children>
+                        <Label layoutX="70.0"
+                               layoutY="30.0"
+                               prefHeight="20.0"
+                               prefWidth="150.0"
+                               text="QUẢN LÝ DỮ LIỆU"
+                               textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </Pane>
+
+                  <!-- NÚT MENU -->
+                  <Button fx:id="btn_trangchu"
+                          layoutX="20.0"
+                          layoutY="200.0"
+                          mnemonicParsing="false"
+                          prefHeight="60.0"
+                          prefWidth="210.0"
+                          styleClass="menu-button"
+                          text="🏠 Trang chủ"
+                          onAction="#openDashboard">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Button>
+
+                  <!-- GỬI TÀI LIỆU -->
+                  <Button fx:id="btn_gui_tailieu"
+                          layoutX="20.0"
+                          layoutY="270.0"
+                          mnemonicParsing="false"
+                          prefHeight="60.0"
+                          prefWidth="210.0"
+                          styleClass="menu-button"
+                          text="📤 Gửi tài liệu"
+                          onAction="#handleSendData">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Button>
+                  
+                  <!-- NHẬN TÀI LIỆU -->
+                  <Button fx:id="btn_nhan_tailieu"
+                          layoutX="20.0"
+                          layoutY="340.0"
+                          mnemonicParsing="false"
+                          prefHeight="60.0"
+                          prefWidth="210.0"
+                          styleClass="menu-button"
+                          text="📥 Nhận tài liệu"
+                          onAction="#handleReceiveData">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Button>
+
+                  <!-- 📚 QUẢN LÝ TÀI LIỆU -->
+                  <Button fx:id="btn_quanly_tailieu"
+                          layoutX="20.0"
+                          layoutY="410.0"
+                          mnemonicParsing="false"
+                          prefHeight="60.0"
+                          prefWidth="210.0"
+                          styleClass="menu-button"
+                          text="📚 Quản lý tài liệu"
+                          onAction="#handleReviewDocuments"
+                          >
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Button>
+
+                  <!-- ✅ DUYỆT TÀI LIỆU -->
+                  <Button fx:id="btn_duyet_tailieu"
+                          layoutX="20.0"
+                          layoutY="480.0"
+                          mnemonicParsing="false"
+                          prefHeight="60.0"
+                          prefWidth="210.0"
+                          styleClass="menu-button"
+                          text="✅ Duyệt tài liệu"
+                          onAction="#handleApproveDocuments">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Button>
+
+                  <!-- ĐĂNG XUẤT -->
+                  <Button fx:id="btn_dangxuat"
+                          layoutX="20.0"
+                          layoutY="550.0"
+                          mnemonicParsing="false"
+                          prefHeight="60.0"
+                          prefWidth="210.0"
+                          styleClass="menu-button"
+                          text="🚪 Đăng xuất"
+                          onAction="#handleLogout">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Button>     
+                 
+
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+
+      <!-- MAIN CONTENT -->
+      <AnchorPane prefHeight="800.0"
+                  prefWidth="950.0"
+                  styleClass="main-content">
+         <children>
+            <VBox spacing="10"
+                  layoutX="30.0"
+                  layoutY="30.0"
+                  prefWidth="880">
+               <children>
+                  <Label text="Hello ! JavaFX Developers"
+                         styleClass="label-title" />
+                  <Label text="Never put off till tomorrow what can be done today !"
+                         styleClass="label-subtitle" />
+                  
+                  <!-- 🔹 Khu vực nội dung thay đổi -->
+                  <AnchorPane fx:id="contentArea"
+                              prefHeight="600.0"
+                              prefWidth="850.0"
+                              styleClass="card">
+                  </AnchorPane>
+
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+
+   </children>
+</HBox>

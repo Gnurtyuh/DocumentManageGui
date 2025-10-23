@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="500" prefWidth="800" stylesheets="@Login.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="com.project.gui.controller.LoginController">
+
+    <!-- Nền gradient -->
+    <AnchorPane prefHeight="500.0" prefWidth="800.0" styleClass="background">
+
+        <!-- Form đăng nhập -->
+        <VBox alignment="CENTER" layoutX="200" layoutY="60" prefHeight="380" prefWidth="400" spacing="25" styleClass="login-box">
+
+            <Label styleClass="title" text="ĐĂNG NHẬP HỆ THỐNG" />
+
+            <VBox alignment="CENTER" spacing="15">
+
+                <!-- Email -->
+                <TextField fx:id="txtName" promptText="Nhập username" styleClass="input-field" />
+
+                <!-- Mật khẩu + nút 👁 -->
+                <HBox alignment="CENTER" spacing="5">
+                    <StackPane>
+                        <PasswordField fx:id="passwordField" prefWidth="260" promptText="Nhập Mật Khẩu" styleClass="input-field" />
+                        <TextField fx:id="textField" managed="false" prefWidth="260" promptText="Nhập Mật Khẩu" styleClass="input-field" visible="false" />
+                    </StackPane>
+                    <Button fx:id="btnTogglePassword" ellipsisString="👁" onAction="#togglePassword" styleClass="eye-btn" text="👁" />
+                </HBox>
+
+                <!-- Thông báo lỗi -->
+                <Label fx:id="lblError" styleClass="error-label" textFill="#ff4d4d" />
+
+                <!-- Nút đăng nhập -->
+                <Button onAction="#handleLogin" styleClass="login-btn" text="ĐĂNG NHẬP" />
+            </VBox>
+        </VBox>
+    </AnchorPane>
+</AnchorPane>

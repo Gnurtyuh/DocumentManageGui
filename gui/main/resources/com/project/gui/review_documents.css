@@ -1,0 +1,40 @@
+.main-container {
+    -fx-background-color: #f4f6f8;
+    -fx-font-family: "Segoe UI";
+}
+
+.title-label {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 20 0 10 0;
+}
+
+.document-container {
+    -fx-padding: 10 0 40 0;
+}
+
+.document-box {
+    -fx-background-color: #ffffff;
+    -fx-padding: 20;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+}
+
+.label {
+    -fx-font-size: 14px;
+}
+
+.view-button {
+    -fx-background-color: #2196f3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 25;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.view-button:hover {
+    -fx-background-color: #1976d2;
+}

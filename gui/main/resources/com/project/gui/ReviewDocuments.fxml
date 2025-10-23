@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.project.gui.controller.ReviewDocumentsController"
+            prefWidth="900" prefHeight="850"
+            stylesheets="@review_documents.css">
+
+    <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+        <Label text="DANH SÁCH TÀI LIỆU " styleClass="title-label"/>
+        
+        <!-- nơi load danh sách tài liệu -->
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+            <VBox fx:id="documentContainer" spacing="20" alignment="TOP_CENTER" styleClass="document-container"/>
+        </ScrollPane>
+    </VBox>
+
+</AnchorPane>

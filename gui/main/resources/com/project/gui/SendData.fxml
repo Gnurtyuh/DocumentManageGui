@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.project.gui.controller.SendDataController"
+            stylesheets="@SendData.css"
+            prefWidth="850" prefHeight="900">
+
+    <VBox alignment="TOP_CENTER" spacing="10" prefWidth="800" layoutY="30">
+
+        <!-- Tiêu đề -->
+        <Label text="Mã Hóa" styleClass="title"/>
+        <Label text="Đơn giản, nhanh chóng, mã hóa tập tin an toàn tại phía máy khách"
+               styleClass="subtitle"/>
+
+        <!-- Tabs -->
+        <HBox alignment="CENTER" spacing="10">
+            <Button text="Mã Hóa" styleClass="btn-primary"/>
+            <Button text="Giải Mã" styleClass="btn-secondary"/>
+        </HBox>
+
+        <!-- 1. Chọn tập tin -->
+        <VBox spacing="10" styleClass="section">
+            <Label text="1  Chọn tập tin để mã hóa" styleClass="section-title"/>
+            <VBox spacing="10" alignment="CENTER" styleClass="file-box">
+                <Button fx:id="btnBrowseFile" text="Duyệt Tập Tin" styleClass="btn-file" onAction="#handleBrowseFile"/>
+                <Label fx:id="lblFilePath" text="Kéo thả hoặc duyệt tập tin" styleClass="note"/>
+            </VBox>
+        </VBox>
+
+        <!-- 2. Nhập mật khẩu -->
+        <VBox spacing="10" styleClass="section">
+            <Label text="2  Nhập mật khẩu" styleClass="section-title"/>
+            <HBox spacing="5" alignment="CENTER_LEFT">
+                <PasswordField fx:id="passwordField" promptText="Nhập mật khẩu" prefWidth="260"/>
+                <TextField fx:id="passwordVisibleField" promptText="Nhập mật khẩu" prefWidth="260"/>
+                <Button fx:id="btnEye" text="👁" styleClass="btn-eye" onAction="#handleTogglePassword"/>
+            </HBox>
+        </VBox>
+
+        <!-- 3. Tải tập tin mã hóa -->
+        <VBox spacing="10" styleClass="section">
+            <Label text="3  Tải tập tin mã hóa" styleClass="section-title"/>
+            <Button fx:id="btnDownload" text="TẢI VỀ" styleClass="btn-download" onAction="#handleDownload"/>
+        </VBox>
+
+        <!-- 4. Gửi dữ liệu -->
+        <VBox spacing="10" styleClass="section">
+            <Label text="4  Gửi dữ liệu" styleClass="section-title"/>
+            <TextArea fx:id="txtTitle"
+                      promptText="Nhập tiêu đề của bạn (tùy chọn)"
+                      prefRowCount="1"
+                      wrapText="true"
+                      styleClass="note-box"/>
+            <!-- Ô ghi chú nhỏ -->
+            <TextArea fx:id="txtNote"
+                      promptText="Nhập ghi chú của bạn (tùy chọn)"
+                      prefRowCount="1"
+                      wrapText="true"
+                      styleClass="note-box"/>
+
+            <!-- Nút gửi -->
+            <Button fx:id="btnSend" text="GỬI DỮ LIỆU" styleClass="btn-send" onAction="#handleSendData"/>
+        </VBox>
+
+    </VBox>
+</AnchorPane>
