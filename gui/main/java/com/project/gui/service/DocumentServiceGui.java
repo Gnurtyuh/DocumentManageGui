@@ -12,7 +12,7 @@ import java.util.List;
 
 public class DocumentServiceGui {
 
-    public static DocumentDto getDocumentById(String id) {
+    public static DocumentDto getDocumentById(Long id) {
         return ApiUtil.get("/user/document/"+id, DocumentDto.class);
     }
     public static DocumentDto createDocument(DocumentDto documentDto) {

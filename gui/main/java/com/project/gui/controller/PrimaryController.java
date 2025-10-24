@@ -1,5 +1,6 @@
 package com.project.gui.controller;
 
+import com.project.gui.model.DocumentDto;
 import com.project.gui.model.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,8 +31,8 @@ public class PrimaryController {
         setContent("/com/project/gui/SendData.fxml");
     }
 
-    public void handleReceive(String fileName) throws IOException {
-        if (fileName == null) {
+    public void handleReceive(Long documentId ,String fileName) throws IOException {
+        if (documentId == null || fileName == null) {
             return;
         }
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/project/gui/ReceiveData.fxml"));
@@ -41,12 +42,22 @@ public class PrimaryController {
 
         ReceiveDataController receiveController = loader.getController();
 
-        // 3️⃣ Truyền file sang
-        receiveController.setEncryptedFile(fileName);
-        AnchorPane.setTopAnchor(fxml, 0.0);
-        AnchorPane.setBottomAnchor(fxml, 0.0);
-        AnchorPane.setLeftAnchor(fxml, 0.0);
-        AnchorPane.setRightAnchor(fxml, 0.0);
+
+        receiveController.setEncryptedFile(documentId, fileName);
+    }
+
+    public void handleLog(Long documentId) throws IOException {
+        if (documentId == null) {
+            return;
+        }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/project/gui/ApproveDocuments.fxml"));
+        Parent fxml = loader.load(); // load FXML
+
+        contentArea.getChildren().setAll(fxml);
+
+        ApproveDocumentsController approveDocumentsController = loader.getController();
+
+        approveDocumentsController.setDocumentId(documentId);
     }
 
     @FXML

@@ -1,7 +1,11 @@
 package com.project.gui.controller;
 
+import com.project.gui.model.DocumentDto;
 import com.project.gui.service.AesServiceGui;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -10,12 +14,14 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.util.Arrays;
 
 public class ReceiveDataController {
 
+    @FXML public Button btnReceive;
     @FXML private Button btnFileBrowse;
     @FXML private Button btnDownload;
     @FXML private Button btnEye;
@@ -26,7 +32,9 @@ public class ReceiveDataController {
 
     private File encryptedFile;     // File mã hóa được chọn
     private boolean passwordVisible = false;
+    private Long documentId;
     private String fileName;
+
 
     @FXML
     private void initialize() {
@@ -59,11 +67,13 @@ public class ReceiveDataController {
             btnEye.setText("👁");
         }
     }
-    public void setEncryptedFile(String file) {
+    public void setEncryptedFile(Long documentId ,String file) {
+        this.documentId = documentId;
         this.fileName = file;
-        if (file != null) {
-            lblFilePath.setText("📦 File được nhận: " + file);
-            System.out.println("📥 File nhận từ trang trước: " + file);
+        if (fileName != null) {
+            lblFilePath.setText("📦 File được nhận: " + fileName);
+            System.out.println("📥 File nhận từ trang trước: " + fileName);
+            System.out.println("📥 File nhận từ trang trước: " + documentId);
         }
     }
     // === 1. Chọn tập tin mã hóa (.enc) ===
@@ -115,13 +125,25 @@ public class ReceiveDataController {
 
     // === 3. Giả lập “Nhận dữ liệu” ===
     @FXML
-    private void handleReceiveData() {
-        if (encryptedFile == null) {
-            showAlert("⚠️ Chưa có tập tin nào được chọn để nhận!", Alert.AlertType.WARNING);
-            return;
-        }
-        showAlert("📥 Dữ liệu đã được nhận thành công!", Alert.AlertType.INFORMATION);
-        System.out.println("📥 File nhận: " + encryptedFile.getAbsolutePath());
+    private void handleReceiveData() throws IOException {
+
+        // 1️⃣ Tạo FXMLLoader để tải giao diện mới
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/project/gui/home.fxml"));
+        Parent root = loader.load();
+
+        // 2️⃣ Lấy controller của trang ReceiveData
+        PrimaryController primaryController = loader.getController();
+
+        // 3️⃣ Truyền file sang
+        primaryController.handleLog(documentId);
+
+        // 4️⃣ Đổi scene
+        Stage stage = (Stage) btnReceive.getScene().getWindow();
+
+        stage.setHeight(939);
+        stage.setScene(new Scene(root));
+        stage.setTitle("Màn hình nhận dữ liệu");
+        stage.show();
     }
 
     // === Hiển thị thông báo ===

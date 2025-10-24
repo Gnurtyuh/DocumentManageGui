@@ -24,7 +24,11 @@ public class LogServiceGui {
         return Arrays.asList(logDto);
     }
     public static List<LogDto> getLogByDepartmentName(String departmentName) {
-        LogDto[] logDto = ApiUtil.get("/user/log/department/"+departmentName, LogDto[].class);
+        LogDto[] logDto = ApiUtil.get("/user/log/departments/"+departmentName, LogDto[].class);
+        return Arrays.asList(logDto);
+    }
+    public static List<LogDto> getLogByDocumentId(long documentId) {
+        LogDto[] logDto = ApiUtil.get("/user/log/document/"+documentId, LogDto[].class);
         return Arrays.asList(logDto);
     }
     public static List<LogDto> getLogByMonth(long userId,int month) {

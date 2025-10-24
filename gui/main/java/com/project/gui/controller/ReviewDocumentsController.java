@@ -50,17 +50,17 @@ public class ReviewDocumentsController {
             String departmentName = documentDto.getDepartmentDto().getDepartmentName();
             String division= documentDto.getDepartmentDto().getDivision();
             String date = convertTime(documentDto.getUploadDate());
-            documentContainer.getChildren().add(createDocumentBox(documentDto.getTitle(),documentDto.getUserDto().getUsername(),
+            documentContainer.getChildren().add(createDocumentBox(documentDto.getDocumentId(),documentDto.getTitle(),documentDto.getUserDto().getUsername(),
                     date,documentDto.getDescription(),
                     documentDto.getFilePath(),departmentName+division));
         }
     }
 
-    private VBox createDocumentBox(String title, String username, String date, String description, String filePath, String departmentName) {
+    private VBox createDocumentBox(Long documentId,String title, String username, String date, String description, String filePath, String departmentName) {
         VBox box = new VBox(10);
         box.getStyleClass().add("document-box");
         box.setPrefWidth(850);
-
+        DocumentDto documentDto = DocumentServiceGui.getDocumentById(documentId);
         GridPane grid = new GridPane();
         grid.setHgap(15);
         grid.setVgap(8);
@@ -87,7 +87,7 @@ public class ReviewDocumentsController {
         viewBtn.getStyleClass().add("view-button");
         viewBtn.setOnAction(e -> {
             try {
-                handleGoToReceivePage(filePath);
+                handleGoToReceivePage(documentId,filePath);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -105,8 +105,8 @@ public class ReviewDocumentsController {
         OffsetDateTime odt = date.toInstant().atOffset(ZoneId.systemDefault().getRules().getOffset(date.toInstant()));
         return odt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     }
-    private void handleGoToReceivePage(String fileName) throws IOException {
-        if (fileName == null) {
+    private void handleGoToReceivePage(Long documentId ,String fileName) throws IOException {
+        if (documentId == null || fileName == null) {
             showAlert();
             return;
         }
@@ -119,11 +119,11 @@ public class ReviewDocumentsController {
         PrimaryController primaryController = loader.getController();
 
         // 3️⃣ Truyền file sang
-        primaryController.handleReceive(fileName);
+        primaryController.handleReceive(documentId, fileName);
 
         // 4️⃣ Đổi scene
         Stage stage = (Stage) documentContainer.getScene().getWindow();
-//        stage.setWidth(1253);
+        stage.setWidth(1253);
         stage.setHeight(939);
         stage.setScene(new Scene(root));
         stage.setTitle("Màn hình nhận dữ liệu");

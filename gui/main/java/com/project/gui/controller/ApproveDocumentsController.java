@@ -7,8 +7,10 @@ import com.project.gui.model.UserDto;
 import com.project.gui.service.DocumentServiceGui;
 import com.project.gui.service.LogServiceGui;
 import com.project.gui.service.UserServiceGui;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -25,29 +27,40 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 
 public class ApproveDocumentsController {
 
     @FXML
     private VBox documentList;
     private final UserDto userDto = UserServiceGui.getUserByUsername(SessionManager.getUsername());
+    private Long documentId;
+    public void setDocumentId(Long documentId){
+        this.documentId = documentId;
+    }
     @FXML
     public void initialize()  {
-        UserDto userDto = UserServiceGui.getUserByUsername(SessionManager.getUsername());
-        List<LogDto> logDtoList= LogServiceGui.getLogByUser(SessionManager.getUsername());
-        if (userDto.getRoleLevel() == 3){
-            logDtoList = LogServiceGui.getLogByUser(SessionManager.getUsername());
-        }
-        if (userDto.getRoleLevel() == 2){
-            logDtoList = LogServiceGui.getLogByDepartmentId(userDto.getDepartmentDto().getDepartmentId());
-        }
-        if  (userDto.getRoleLevel() == 1){
-            logDtoList = LogServiceGui.getLogByDepartmentName(userDto.getDepartmentDto().getDepartmentName());
-        }
-        for(LogDto logDto:logDtoList){
-            Logs(logDto);
-        }
+        Platform.runLater(() -> {
+            UserDto userDto = UserServiceGui.getUserByUsername(SessionManager.getUsername());
+            List<LogDto>logDtoList = List.of();
+            logDtoList= LogServiceGui.getLogByUser(SessionManager.getUsername());
+            if (userDto.getRoleLevel() == 3){
+                logDtoList = LogServiceGui.getLogByUser(SessionManager.getUsername());
+            }
+            if (userDto.getRoleLevel() == 2){
+                logDtoList = LogServiceGui.getLogByDepartmentId(userDto.getDepartmentDto().getDepartmentId());
+            }
+            if  (userDto.getRoleLevel() == 1){
+                logDtoList = LogServiceGui.getLogByDepartmentName(userDto.getDepartmentDto().getDepartmentName());
+            }
+            if(documentId !=null){
+                logDtoList = LogServiceGui.getLogByDocumentId(documentId);
+
+            }
+            for(LogDto logDto:logDtoList){
+                Logs(logDto);
+
+            }
+        });
     }
 
     private void Logs(LogDto logDto) {
@@ -64,7 +77,7 @@ public class ApproveDocumentsController {
         String username=logDto.getUserDto().getUsername();
         VBox card = new VBox(10);
         card.getStyleClass().add("document-card");
-
+        DocumentDto documentDto = logDto.getDocumentDto();
         GridPane grid = new GridPane();
         grid.setHgap(30);
         grid.setVgap(10);
@@ -100,7 +113,7 @@ public class ApproveDocumentsController {
         viewBtn.getStyleClass().add("btn-view");
         viewBtn.setOnAction(e -> {
             try {
-                handleGoToReceivePage(document);
+                handleGoToReceivePage(documentDto.getDocumentId(), document);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -115,12 +128,12 @@ public class ApproveDocumentsController {
             btnReject.getStyleClass().add("btn-reject");
             btnReject.setOnAction(e -> LogServiceGui.updateLog(logDto.getLogId(), logDto, "FAILED"));
             HBox buttons = new HBox(20, btnApprove, btnReject, viewBtn);
-            buttons.setAlignment(javafx.geometry.Pos.CENTER);
+            buttons.setAlignment(Pos.CENTER);
 
             card.getChildren().addAll(grid, buttons);
         }else {
             HBox buttons = new HBox(20, viewBtn);
-            buttons.setAlignment(javafx.geometry.Pos.CENTER);
+            buttons.setAlignment(Pos.CENTER);
 
             card.getChildren().addAll(grid, buttons);
         }
@@ -132,8 +145,8 @@ public class ApproveDocumentsController {
         OffsetDateTime odt = date.toInstant().atOffset(ZoneId.systemDefault().getRules().getOffset(date.toInstant()));
         return odt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     }
-    private void handleGoToReceivePage(String fileName) throws IOException {
-        if (fileName == null) {
+    private void handleGoToReceivePage(Long documentId ,String fileName) throws IOException {
+        if (documentId == null || fileName == null) {
             showAlert();
             return;
         }
@@ -146,7 +159,7 @@ public class ApproveDocumentsController {
         PrimaryController primaryController = loader.getController();
 
         // 3️⃣ Truyền file sang
-        primaryController.handleReceive(fileName);
+        primaryController.handleReceive(documentId, fileName);
 
         // 4️⃣ Đổi scene
         Stage stage = (Stage) documentList.getScene().getWindow();
@@ -155,7 +168,7 @@ public class ApproveDocumentsController {
         stage.setTitle("Màn hình nhận dữ liệu");
         stage.show();
     }
-    private void showAlert() {
+    private void showAlert(){
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Thông báo");
         alert.setHeaderText(null);
