@@ -73,7 +73,7 @@ public class ApproveDocumentsController {
         String document=logDto.getDocumentDto().getFilePath();
         String created=convertTime(logDto.getCreatedAt());
         String completed=convertTime(logDto.getCompletedAt());
-        String dept=departmentName+division;
+        String dept=departmentName+"-"+division;
         String username=logDto.getUserDto().getUsername();
         VBox card = new VBox(10);
         card.getStyleClass().add("document-card");

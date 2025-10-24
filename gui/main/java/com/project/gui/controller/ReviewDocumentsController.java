@@ -52,7 +52,7 @@ public class ReviewDocumentsController {
             String date = convertTime(documentDto.getUploadDate());
             documentContainer.getChildren().add(createDocumentBox(documentDto.getDocumentId(),documentDto.getTitle(),documentDto.getUserDto().getUsername(),
                     date,documentDto.getDescription(),
-                    documentDto.getFilePath(),departmentName+division));
+                    documentDto.getFilePath(),departmentName+"-"+division));
         }
     }
 
@@ -60,7 +60,6 @@ public class ReviewDocumentsController {
         VBox box = new VBox(10);
         box.getStyleClass().add("document-box");
         box.setPrefWidth(850);
-        DocumentDto documentDto = DocumentServiceGui.getDocumentById(documentId);
         GridPane grid = new GridPane();
         grid.setHgap(15);
         grid.setVgap(8);
