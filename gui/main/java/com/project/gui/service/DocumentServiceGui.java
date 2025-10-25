@@ -7,6 +7,8 @@ import com.project.gui.model.UserDto;
 import com.project.gui.util.ApiUtil;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +27,7 @@ public class DocumentServiceGui {
         return ApiUtil.del("/users/document/" + id);
     }
     public static List<DocumentDto> getDocumentByDepartmentId(Long departmentId) {
-        DocumentDto[] documentDto=ApiUtil.get("/user/document/departmentId/search?departmentId=" + departmentId, DocumentDto[].class);
+        DocumentDto[] documentDto=ApiUtil.get("/user/document/departmentId?departmentId=" + departmentId, DocumentDto[].class);
         return Arrays.asList(documentDto);
     }
     public static List<DocumentDto> getDocumentByUser(String username){
@@ -33,7 +35,9 @@ public class DocumentServiceGui {
         return Arrays.asList(documentDto);
     }
     public static List<DocumentDto> getDocumentByDepartmentName(String departmentName) {
-        DocumentDto[] documentDto =ApiUtil.get("/user/document/search?departmentName=" + departmentName, DocumentDto[].class);
+
+        departmentName = URLEncoder.encode(departmentName, StandardCharsets.UTF_8);
+        DocumentDto[] documentDto =ApiUtil.get("/user/document?departmentName=" + departmentName, DocumentDto[].class);
         return Arrays.asList(documentDto);
     }
 }

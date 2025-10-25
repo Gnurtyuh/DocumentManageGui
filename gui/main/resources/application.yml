@@ -1,0 +1,11 @@
+spring:
+  application:
+    name:
+      Documents
+  datasource:
+    url: jdbc:postgresql://localhost:5432/t8
+    username: postgres
+    password: 123456
+    driverClassName: org.postgresql.Driver
+server:
+  port: 8000

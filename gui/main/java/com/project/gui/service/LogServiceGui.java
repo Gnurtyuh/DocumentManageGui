@@ -4,6 +4,8 @@ import com.project.gui.model.LogDto;
 import com.project.gui.util.ApiUtil;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,7 +15,7 @@ public class LogServiceGui {
     }
     public static LogDto updateLog(long logId,LogDto logDto,String Status)  {
         logDto.setStatus(Status);
-        return ApiUtil.post("/user/log/"+logId,logDto,LogDto.class);
+        return ApiUtil.put("/user/log/update/"+logId,logDto,LogDto.class);
     }
     public static List<LogDto> getLogByUser (String username){
         LogDto[] logDto = ApiUtil.get("/user/log/userid/"+username, LogDto[].class);
@@ -24,6 +26,7 @@ public class LogServiceGui {
         return Arrays.asList(logDto);
     }
     public static List<LogDto> getLogByDepartmentName(String departmentName) {
+        departmentName = URLEncoder.encode(departmentName, StandardCharsets.UTF_8);
         LogDto[] logDto = ApiUtil.get("/user/log/departments/"+departmentName, LogDto[].class);
         return Arrays.asList(logDto);
     }

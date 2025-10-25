@@ -4,7 +4,6 @@ import com.project.gui.model.DocumentDto;
 import com.project.gui.model.LogDto;
 import com.project.gui.model.SessionManager;
 import com.project.gui.model.UserDto;
-import com.project.gui.service.DocumentServiceGui;
 import com.project.gui.service.LogServiceGui;
 import com.project.gui.service.UserServiceGui;
 import javafx.application.Platform;
@@ -26,6 +25,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class ApproveDocumentsController {
@@ -40,17 +40,17 @@ public class ApproveDocumentsController {
     @FXML
     public void initialize()  {
         Platform.runLater(() -> {
-            UserDto userDto = UserServiceGui.getUserByUsername(SessionManager.getUsername());
             List<LogDto>logDtoList = List.of();
             logDtoList= LogServiceGui.getLogByUser(SessionManager.getUsername());
-            if (userDto.getRoleLevel() == 3){
-                logDtoList = LogServiceGui.getLogByUser(SessionManager.getUsername());
-            }
-            if (userDto.getRoleLevel() == 2){
-                logDtoList = LogServiceGui.getLogByDepartmentId(userDto.getDepartmentDto().getDepartmentId());
-            }
             if  (userDto.getRoleLevel() == 1){
                 logDtoList = LogServiceGui.getLogByDepartmentName(userDto.getDepartmentDto().getDepartmentName());
+            }
+            else
+            if (userDto.getRoleLevel() == 2){
+                logDtoList = LogServiceGui.getLogByDepartmentId(userDto.getDepartmentDto().getDepartmentId());
+            }else
+            if (userDto.getRoleLevel() == 3){
+                logDtoList = LogServiceGui.getLogByUser(SessionManager.getUsername());
             }
             if(documentId !=null){
                 logDtoList = LogServiceGui.getLogByDocumentId(documentId);
@@ -58,7 +58,6 @@ public class ApproveDocumentsController {
             }
             for(LogDto logDto:logDtoList){
                 Logs(logDto);
-
             }
         });
     }
@@ -72,7 +71,10 @@ public class ApproveDocumentsController {
         String description=logDto.getDescription();
         String document=logDto.getDocumentDto().getFilePath();
         String created=convertTime(logDto.getCreatedAt());
-        String completed=convertTime(logDto.getCompletedAt());
+        String completed = null;
+        if (logDto.getCompletedAt()!=null){
+            completed=convertTime(logDto.getCompletedAt());
+        }
         String dept=departmentName+"-"+division;
         String username=logDto.getUserDto().getUsername();
         VBox card = new VBox(10);
@@ -119,19 +121,32 @@ public class ApproveDocumentsController {
             }
         });
         if (logDto.getStatus().equals("PENDING")&& userDto.getRoleLevel() == 2) {
-            logDto.setAction("COMPLETED");
+            logDto.setAction("TRƯỞNG PHÒNG PHÊ DUYỆT");
             Button btnApprove = new Button("Xác nhận");
             btnApprove.getStyleClass().add("btn-approve");
-            btnApprove.setOnAction(e -> LogServiceGui.updateLog(logDto.getLogId(), logDto, "SUCCESS"));
+            btnApprove.setOnAction(e -> { LogServiceGui.updateLog(logDto.getLogId(), logDto, "UPDATE");showAlert();});
+
 
             Button btnReject = new Button("Từ chối");
             btnReject.getStyleClass().add("btn-reject");
-            btnReject.setOnAction(e -> LogServiceGui.updateLog(logDto.getLogId(), logDto, "FAILED"));
+            btnReject.setOnAction(e -> {LogServiceGui.updateLog(logDto.getLogId(), logDto, "TỪ CHỐI");showAlert();});
             HBox buttons = new HBox(20, btnApprove, btnReject, viewBtn);
             buttons.setAlignment(Pos.CENTER);
 
             card.getChildren().addAll(grid, buttons);
-        }else {
+        }else if(logDto.getStatus().equals("UPDATE")&& userDto.getRoleLevel() == 1) {
+            logDto.setAction("HOÀN THÀNH");
+            Button btnApprove = new Button("Xác nhận");
+            btnApprove.getStyleClass().add("btn-approve");
+            btnApprove.setOnAction(e ->{ LogServiceGui.updateLog(logDto.getLogId(), logDto, "XÉT DUYỆT THÀNH CÔNG");showAlert();});
+
+            Button btnReject = new Button("Từ chối");
+            btnReject.getStyleClass().add("btn-reject");
+            btnReject.setOnAction(e -> {LogServiceGui.updateLog(logDto.getLogId(), logDto, "TỪ CHỐI");showAlert();});
+            HBox buttons = new HBox(20, btnApprove, btnReject, viewBtn);
+            buttons.setAlignment(Pos.CENTER);
+            card.getChildren().addAll(grid, buttons);
+        }else{
             HBox buttons = new HBox(20, viewBtn);
             buttons.setAlignment(Pos.CENTER);
 
@@ -172,7 +187,14 @@ public class ApproveDocumentsController {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Thông báo");
         alert.setHeaderText(null);
-        alert.setContentText("⚠️ Bạn cần chọn file trước!");
+        alert.setContentText("Bạn đã chọn thành công!");
+        alert.showAndWait();
+    }
+    private void showAlert1(String message){
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Thông báo");
+        alert.setHeaderText(null);
+        alert.setContentText("Bạn đã chọn thành công!"+message);
         alert.showAndWait();
     }
 }
