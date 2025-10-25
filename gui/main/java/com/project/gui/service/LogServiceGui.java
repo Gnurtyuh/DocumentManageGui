@@ -27,7 +27,7 @@ public class LogServiceGui {
     }
     public static List<LogDto> getLogByDepartmentName(String departmentName) {
         departmentName = URLEncoder.encode(departmentName, StandardCharsets.UTF_8);
-        LogDto[] logDto = ApiUtil.get("/user/log/departments/"+departmentName, LogDto[].class);
+        LogDto[] logDto = ApiUtil.get("/user/log/departments?departmentName="+departmentName, LogDto[].class);
         return Arrays.asList(logDto);
     }
     public static List<LogDto> getLogByDocumentId(long documentId) {

@@ -1,9 +1,6 @@
 package com.project.gui.controller;
 
-import com.project.gui.model.DocumentDto;
-import com.project.gui.model.LogDto;
-import com.project.gui.model.SessionManager;
-import com.project.gui.model.UserDto;
+import com.project.gui.model.*;
 import com.project.gui.service.LogServiceGui;
 import com.project.gui.service.UserServiceGui;
 import javafx.application.Platform;
@@ -12,189 +9,154 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import java.util.stream.Collectors;
 
 public class ApproveDocumentsController {
 
-    @FXML
-    private VBox documentList;
+    @FXML private VBox documentList;
     private final UserDto userDto = UserServiceGui.getUserByUsername(SessionManager.getUsername());
     private Long documentId;
-    public void setDocumentId(Long documentId){
+
+    public void setDocumentId(Long documentId) {
         this.documentId = documentId;
     }
-    @FXML
-    public void initialize()  {
-        Platform.runLater(() -> {
-            List<LogDto>logDtoList = List.of();
-            logDtoList= LogServiceGui.getLogByUser(SessionManager.getUsername());
-            if  (userDto.getRoleLevel() == 1){
-                logDtoList = LogServiceGui.getLogByDepartmentName(userDto.getDepartmentDto().getDepartmentName());
-            }
-            else
-            if (userDto.getRoleLevel() == 2){
-                logDtoList = LogServiceGui.getLogByDepartmentId(userDto.getDepartmentDto().getDepartmentId());
-            }else
-            if (userDto.getRoleLevel() == 3){
-                logDtoList = LogServiceGui.getLogByUser(SessionManager.getUsername());
-            }
-            if(documentId !=null){
-                logDtoList = LogServiceGui.getLogByDocumentId(documentId);
 
-            }
-            for(LogDto logDto:logDtoList){
-                Logs(logDto);
-            }
-        });
+    @FXML
+    public void initialize() {
+        Platform.runLater(this::loadLogs);
     }
 
-    private void Logs(LogDto logDto) {
-        String departmentName = logDto.getDepartmentDto().getDepartmentName();
-        String division= logDto.getDepartmentDto().getDivision();
-        String action = logDto.getAction();
-        String target = logDto.getTarget();
-        String status=logDto.getStatus();
-        String description=logDto.getDescription();
-        String document=logDto.getDocumentDto().getFilePath();
-        String created=convertTime(logDto.getCreatedAt());
-        String completed = null;
-        if (logDto.getCompletedAt()!=null){
-            completed=convertTime(logDto.getCompletedAt());
+    private void loadLogs() {
+        List<LogDto> logs = fetchLogsByRole();
+
+        if (documentId != null) {
+            logs = LogServiceGui.getLogByDocumentId(documentId);
         }
-        String dept=departmentName+"-"+division;
-        String username=logDto.getUserDto().getUsername();
+
+        documentList.getChildren().clear();
+        logs.forEach(this::renderLogCard);
+    }
+
+    private List<LogDto> fetchLogsByRole() {
+        int role = userDto.getRoleLevel();
+        String username = SessionManager.getUsername();
+        String deptName = userDto.getDepartmentDto().getDepartmentName();
+        Long deptId = userDto.getDepartmentDto().getDepartmentId();
+
+        return switch (role) {
+            case 1 -> LogServiceGui.getLogByDepartmentName(deptName);
+            case 2 -> LogServiceGui.getLogByDepartmentId(deptId);
+            default -> LogServiceGui.getLogByUser(username);
+        };
+    }
+
+    private void renderLogCard(LogDto logDto) {
         VBox card = new VBox(10);
         card.getStyleClass().add("document-card");
-        DocumentDto documentDto = logDto.getDocumentDto();
+
         GridPane grid = new GridPane();
         grid.setHgap(30);
         grid.setVgap(10);
 
-        grid.add(new Label("Hành động:"), 0, 0);
-        grid.add(new Label(action), 1, 0);
+        DocumentDto doc = logDto.getDocumentDto();
+        DepartmentDto dept = logDto.getDepartmentDto();
+        UserDto user = logDto.getUserDto();
 
-        grid.add(new Label("Mục tiêu:"), 0, 1);
-        grid.add(new Label(target), 1, 1);
+        String completed = logDto.getCompletedAt() != null ? convertTime(logDto.getCompletedAt()) : "—";
 
-        grid.add(new Label("Trạng thái:"), 0, 2);
-        grid.add(new Label(status), 1, 2);
+        addGridRow(grid, "Hành động:", logDto.getAction());
+        addGridRow(grid, "Mục tiêu:", logDto.getTarget());
+        addGridRow(grid, "Trạng thái:", logDto.getStatus());
+        addGridRow(grid, "Mô tả:", logDto.getDescription());
+        addGridRow(grid, "Tên tài liệu:", doc.getFilePath());
+        addGridRow(grid, "Thời gian gửi:", convertTime(logDto.getCreatedAt()));
+        addGridRow(grid, "Thời gian hoàn thành:", completed);
+        addGridRow(grid, "Phòng ban:", dept.getDepartmentName() + " - " + dept.getDivision());
+        addGridRow(grid, "Người thực hiện:", user.getUsername());
 
-        grid.add(new Label("Mô tả:"), 0, 3);
-        grid.add(new Label(description), 1, 3);
-
-        grid.add(new Label("Tên tài liệu:"), 0, 4);
-        grid.add(new Label(document), 1, 4);
-
-        grid.add(new Label("Thời gian gửi tài liệu:"), 0, 5);
-        grid.add(new Label(created), 1, 5);
-
-        grid.add(new Label("Thời gian hoàn thành:"), 0, 6);
-        grid.add(new Label(completed), 1, 6);
-
-        grid.add(new Label("Tên phòng ban:"), 0, 7);
-        grid.add(new Label(dept), 1, 7);
-
-        grid.add(new Label("Người thực hiện:"), 0, 8);
-        grid.add(new Label(username), 1, 8);
-
+        // Nút chung
         Button viewBtn = new Button("Xem");
         viewBtn.getStyleClass().add("btn-view");
-        viewBtn.setOnAction(e -> {
-            try {
-                handleGoToReceivePage(documentDto.getDocumentId(), document);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-        if (logDto.getStatus().equals("PENDING")&& userDto.getRoleLevel() == 2) {
+        viewBtn.setOnAction(e -> openDocument(doc.getDocumentId(), doc.getFilePath()));
+
+        HBox buttons = new HBox(20);
+        buttons.setAlignment(Pos.CENTER);
+
+        // Thêm nút theo trạng thái + quyền
+        if (logDto.getStatus().equals("PENDING") && userDto.getRoleLevel() == 2) {
             logDto.setAction("TRƯỞNG PHÒNG PHÊ DUYỆT");
-            Button btnApprove = new Button("Xác nhận");
-            btnApprove.getStyleClass().add("btn-approve");
-            btnApprove.setOnAction(e -> { LogServiceGui.updateLog(logDto.getLogId(), logDto, "UPDATE");showAlert();});
-
-
-            Button btnReject = new Button("Từ chối");
-            btnReject.getStyleClass().add("btn-reject");
-            btnReject.setOnAction(e -> {LogServiceGui.updateLog(logDto.getLogId(), logDto, "TỪ CHỐI");showAlert();});
-            HBox buttons = new HBox(20, btnApprove, btnReject, viewBtn);
-            buttons.setAlignment(Pos.CENTER);
-
-            card.getChildren().addAll(grid, buttons);
-        }else if(logDto.getStatus().equals("UPDATE")&& userDto.getRoleLevel() == 1) {
+            buttons.getChildren().addAll(
+                    createActionButton("Xác nhận", "UPDATE", logDto),
+                    createActionButton("Từ chối", "TỪ CHỐI", logDto)
+            );
+        } else if (logDto.getStatus().equals("UPDATE") && userDto.getRoleLevel() == 1) {
             logDto.setAction("HOÀN THÀNH");
-            Button btnApprove = new Button("Xác nhận");
-            btnApprove.getStyleClass().add("btn-approve");
-            btnApprove.setOnAction(e ->{ LogServiceGui.updateLog(logDto.getLogId(), logDto, "XÉT DUYỆT THÀNH CÔNG");showAlert();});
-
-            Button btnReject = new Button("Từ chối");
-            btnReject.getStyleClass().add("btn-reject");
-            btnReject.setOnAction(e -> {LogServiceGui.updateLog(logDto.getLogId(), logDto, "TỪ CHỐI");showAlert();});
-            HBox buttons = new HBox(20, btnApprove, btnReject, viewBtn);
-            buttons.setAlignment(Pos.CENTER);
-            card.getChildren().addAll(grid, buttons);
-        }else{
-            HBox buttons = new HBox(20, viewBtn);
-            buttons.setAlignment(Pos.CENTER);
-
-            card.getChildren().addAll(grid, buttons);
+            buttons.getChildren().addAll(
+                    createActionButton("Xác nhận", "XÉT DUYỆT THÀNH CÔNG", logDto),
+                    createActionButton("Từ chối", "TỪ CHỐI", logDto)
+            );
         }
 
-
+        buttons.getChildren().add(viewBtn);
+        card.getChildren().addAll(grid, buttons);
         documentList.getChildren().add(card);
     }
-    public String convertTime(Timestamp date) {
-        OffsetDateTime odt = date.toInstant().atOffset(ZoneId.systemDefault().getRules().getOffset(date.toInstant()));
-        return odt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+
+    private void addGridRow(GridPane grid, String label, String value) {
+        int row = grid.getRowCount();
+        grid.addRow(row, new Label(label), new Label(value != null ? value : "—"));
     }
-    private void handleGoToReceivePage(Long documentId ,String fileName) throws IOException {
+
+    private Button createActionButton(String text, String status, LogDto log) {
+        Button btn = new Button(text);
+        btn.getStyleClass().add(text.equals("Xác nhận") ? "btn-approve" : "btn-reject");
+        btn.setOnAction(e -> {
+            LogServiceGui.updateLog(log.getLogId(), log, status);
+            showAlert("Thao tác " + text.toLowerCase() + " thành công!");
+            loadLogs(); // refresh lại UI
+        });
+        return btn;
+    }
+
+    private void openDocument(Long documentId, String fileName) {
         if (documentId == null || fileName == null) {
-            showAlert();
+            showAlert("Thiếu thông tin tài liệu!");
             return;
         }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/project/gui/home.fxml"));
+            Parent root = loader.load();
+            PrimaryController primaryController = loader.getController();
+            primaryController.handleReceive(documentId, fileName);
 
-        // 1️⃣ Tạo FXMLLoader để tải giao diện mới
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/project/gui/home.fxml"));
-        Parent root = loader.load();
-
-        // 2️⃣ Lấy controller của trang ReceiveData
-        PrimaryController primaryController = loader.getController();
-
-        // 3️⃣ Truyền file sang
-        primaryController.handleReceive(documentId, fileName);
-
-        // 4️⃣ Đổi scene
-        Stage stage = (Stage) documentList.getScene().getWindow();
-        stage.setHeight(939);
-        stage.setScene(new Scene(root));
-        stage.setTitle("Màn hình nhận dữ liệu");
-        stage.show();
+            Stage stage = (Stage) documentList.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Màn hình nhận dữ liệu");
+            stage.setHeight(939);
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Lỗi khi mở tài liệu: " + e.getMessage());
+        }
     }
-    private void showAlert(){
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+
+    private String convertTime(Timestamp ts) {
+        OffsetDateTime odt = ts.toInstant().atOffset(ZoneId.systemDefault().getRules().getOffset(ts.toInstant()));
+        return odt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Thông báo");
         alert.setHeaderText(null);
-        alert.setContentText("Bạn đã chọn thành công!");
-        alert.showAndWait();
-    }
-    private void showAlert1(String message){
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Thông báo");
-        alert.setHeaderText(null);
-        alert.setContentText("Bạn đã chọn thành công!"+message);
+        alert.setContentText(message);
         alert.showAndWait();
     }
 }

@@ -35,7 +35,6 @@ public class DocumentServiceGui {
         return Arrays.asList(documentDto);
     }
     public static List<DocumentDto> getDocumentByDepartmentName(String departmentName) {
-
         departmentName = URLEncoder.encode(departmentName, StandardCharsets.UTF_8);
         DocumentDto[] documentDto =ApiUtil.get("/user/document?departmentName=" + departmentName, DocumentDto[].class);
         return Arrays.asList(documentDto);
