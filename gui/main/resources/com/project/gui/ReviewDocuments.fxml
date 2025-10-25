@@ -10,13 +10,27 @@
             prefWidth="900" prefHeight="850"
             stylesheets="@review_documents.css">
 
-    <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
-        <Label text="DANH SÁCH TÀI LIỆU " styleClass="title-label"/>
-        
-        <!-- nơi load danh sách tài liệu -->
-        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
-            <VBox fx:id="documentContainer" spacing="20" alignment="TOP_CENTER" styleClass="document-container"/>
+    <VBox alignment="TOP_CENTER"
+          spacing="20"
+          AnchorPane.topAnchor="20"
+          AnchorPane.leftAnchor="20"
+          AnchorPane.rightAnchor="20">
+
+        <Label text="DANH SÁCH TÀI LIỆU" styleClass="title-label"/>
+
+        <!-- Khu vực danh sách tài liệu có cuộn -->
+        <ScrollPane fitToWidth="true"
+                    prefHeight="700"
+                    style="-fx-background-color: transparent;"
+                    styleClass="scroll-box">
+            <content>
+                <VBox fx:id="documentContainer"
+                      spacing="20"
+                      alignment="TOP_CENTER"
+                      styleClass="document-container"/>
+            </content>
         </ScrollPane>
+
     </VBox>
 
 </AnchorPane>

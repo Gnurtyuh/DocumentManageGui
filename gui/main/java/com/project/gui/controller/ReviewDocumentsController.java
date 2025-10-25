@@ -1,10 +1,8 @@
 package com.project.gui.controller;
 
-import com.project.gui.model.DepartmentDto;
 import com.project.gui.model.DocumentDto;
 import com.project.gui.model.SessionManager;
 import com.project.gui.model.UserDto;
-import com.project.gui.service.DepartmentServiceGui;
 import com.project.gui.service.DocumentServiceGui;
 import com.project.gui.service.UserServiceGui;
 import javafx.fxml.FXML;
@@ -35,62 +33,51 @@ public class ReviewDocumentsController {
 
     @FXML
     public void initialize() {
-        List<DocumentDto> documentDtoList = List.of();
-        UserDto userDto = UserServiceGui.getUserByUsername(SessionManager.getUsername());
-        if (userDto.getRoleLevel() == 3){
-            documentDtoList = DocumentServiceGui.getDocumentByUser(SessionManager.getUsername());
+        UserDto currentUser = UserServiceGui.getUserByUsername(SessionManager.getUsername());
+        List<DocumentDto> documents = fetchDocumentsByRole(currentUser);
+
+        // Nếu không có tài liệu nào
+        if (documents == null || documents.isEmpty()) {
+            Label emptyLabel = new Label("Không có tài liệu nào để xem.");
+            emptyLabel.getStyleClass().add("empty-label");
+            documentContainer.getChildren().add(emptyLabel);
+            return;
         }
-        if (userDto.getRoleLevel() == 2){
-            documentDtoList = DocumentServiceGui.getDocumentByDepartmentId(userDto.getDepartmentDto().getDepartmentId());
-        }
-        if  (userDto.getRoleLevel() == 1){
-            documentDtoList = DocumentServiceGui.getDocumentByDepartmentName(userDto.getDepartmentDto().getDepartmentName());
-        }
-        for(DocumentDto documentDto:documentDtoList){
-            String departmentName = documentDto.getDepartmentDto().getDepartmentName();
-            String division= documentDto.getDepartmentDto().getDivision();
-            String date = convertTime(documentDto.getUploadDate());
-            documentContainer.getChildren().add(createDocumentBox(documentDto.getDocumentId(),documentDto.getTitle(),documentDto.getUserDto().getUsername(),
-                    date,documentDto.getDescription(),
-                    documentDto.getFilePath(),departmentName+"-"+division));
-        }
+
+        // Hiển thị danh sách tài liệu
+        documents.forEach(doc -> documentContainer.getChildren().add(createDocumentBox(doc)));
     }
 
-    private VBox createDocumentBox(Long documentId,String title, String username, String date, String description, String filePath, String departmentName) {
+    /** 🔹 Lấy danh sách tài liệu tùy theo vai trò người dùng */
+    private List<DocumentDto> fetchDocumentsByRole(UserDto user) {
+        return switch (user.getRoleLevel()) {
+            case 3 -> DocumentServiceGui.getDocumentByUser(SessionManager.getUsername());
+            case 2 -> DocumentServiceGui.getDocumentByDepartmentId(user.getDepartmentDto().getDepartmentId());
+            case 1 -> DocumentServiceGui.getDocumentByDepartmentName(user.getDepartmentDto().getDepartmentName());
+            default -> List.of();
+        };
+    }
+
+    /** 🔹 Tạo một khung hiển thị thông tin tài liệu */
+    private VBox createDocumentBox(DocumentDto document) {
         VBox box = new VBox(10);
         box.getStyleClass().add("document-box");
         box.setPrefWidth(850);
+
         GridPane grid = new GridPane();
         grid.setHgap(15);
         grid.setVgap(8);
 
-        grid.add(new Label("Tên tài liệu:"), 0, 0);
-        grid.add(new Label(title), 1, 0);
-
-        grid.add(new Label("Người gửi:"), 0, 1);
-        grid.add(new Label(username), 1, 1);
-
-        grid.add(new Label("Ngày gửi:"), 0, 2);
-        grid.add(new Label(date), 1, 2);
-
-        grid.add(new Label("Trạng thái:"), 0, 3);
-        grid.add(new Label(description), 1, 3);
-
-        grid.add(new Label("File tài liệu: "), 0, 4);
-        grid.add(new Label(filePath), 1, 4);
-
-        grid.add(new Label("Phòng ban:"), 0, 5);
-        grid.add(new Label(departmentName), 1, 5);
+        addRow(grid, 0, "Tên tài liệu:", document.getTitle());
+        addRow(grid, 1, "Người gửi:", document.getUserDto().getUsername());
+        addRow(grid, 2, "Ngày gửi:", formatTimestamp(document.getUploadDate()));
+        addRow(grid, 3, "Trạng thái:", document.getDescription());
+        addRow(grid, 4, "File tài liệu:", document.getFilePath());
+        addRow(grid, 5, "Phòng ban:", document.getDepartmentDto().getDepartmentName() + " - " + document.getDepartmentDto().getDivision());
 
         Button viewBtn = new Button("Xem");
         viewBtn.getStyleClass().add("view-button");
-        viewBtn.setOnAction(e -> {
-            try {
-                handleGoToReceivePage(documentId,filePath);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+        viewBtn.setOnAction(e -> openDocument(document));
 
         HBox btnBox = new HBox(viewBtn);
         btnBox.setAlignment(Pos.CENTER);
@@ -100,39 +87,49 @@ public class ReviewDocumentsController {
         return box;
     }
 
-    public String convertTime(Timestamp date) {
-        OffsetDateTime odt = date.toInstant().atOffset(ZoneId.systemDefault().getRules().getOffset(date.toInstant()));
+    /** 🔹 Hàm phụ trợ để thêm một dòng vào GridPane */
+    private void addRow(GridPane grid, int rowIndex, String label, String value) {
+        grid.add(new Label(label), 0, rowIndex);
+        grid.add(new Label(value != null ? value : "—"), 1, rowIndex);
+    }
+
+    /** 🔹 Chuyển đổi Timestamp sang định dạng dễ đọc */
+    private String formatTimestamp(Timestamp timestamp) {
+        if (timestamp == null) return "Không xác định";
+        OffsetDateTime odt = timestamp.toInstant().atOffset(ZoneId.systemDefault().getRules().getOffset(timestamp.toInstant()));
         return odt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     }
-    private void handleGoToReceivePage(Long documentId ,String fileName) throws IOException {
-        if (documentId == null || fileName == null) {
-            showAlert();
+
+    /** 🔹 Mở giao diện xem tài liệu */
+    private void openDocument(DocumentDto document) {
+        if (document.getDocumentId() == null || document.getFilePath() == null) {
+            showAlert("⚠️ Bạn cần chọn file hợp lệ trước!");
             return;
         }
 
-        // 1️⃣ Tạo FXMLLoader để tải giao diện mới
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/project/gui/home.fxml"));
-        Parent root = loader.load();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/project/gui/home.fxml"));
+            Parent root = loader.load();
 
-        // 2️⃣ Lấy controller của trang ReceiveData
-        PrimaryController primaryController = loader.getController();
+            PrimaryController primaryController = loader.getController();
+            primaryController.handleReceive(document.getDocumentId(), document.getFilePath());
 
-        // 3️⃣ Truyền file sang
-        primaryController.handleReceive(documentId, fileName);
+            Stage stage = (Stage) documentContainer.getScene().getWindow();
+            stage.setScene(new Scene(root, 1253, 939));
+            stage.setTitle("Màn hình nhận dữ liệu");
+            stage.show();
 
-        // 4️⃣ Đổi scene
-        Stage stage = (Stage) documentContainer.getScene().getWindow();
-        stage.setWidth(1253);
-        stage.setHeight(939);
-        stage.setScene(new Scene(root));
-        stage.setTitle("Màn hình nhận dữ liệu");
-        stage.show();
+        } catch (IOException e) {
+            showAlert("❌ Lỗi khi mở tài liệu: " + e.getMessage());
+        }
     }
-    private void showAlert() {
+
+    /** 🔹 Hiển thị cảnh báo đơn giản */
+    private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Thông báo");
         alert.setHeaderText(null);
-        alert.setContentText("⚠️ Bạn cần chọn file trước!");
+        alert.setContentText(message);
         alert.showAndWait();
     }
 }

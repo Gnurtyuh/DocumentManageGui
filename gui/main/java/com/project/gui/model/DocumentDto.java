@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class DocumentDto {
-    private long documentId;
+    private Long documentId;
     private String title;
     private String description;
     private Timestamp uploadDate;

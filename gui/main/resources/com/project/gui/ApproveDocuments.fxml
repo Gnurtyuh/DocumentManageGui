@@ -8,32 +8,30 @@
             prefWidth="850" prefHeight="900"
             stylesheets="@ApproveDocuments.css">
 
-    <children>
-        <VBox alignment="TOP_CENTER"
-              layoutX="25" layoutY="25"
-              spacing="25"
-              prefWidth="800"
-              prefHeight="850">
+    <VBox alignment="TOP_CENTER"
+          layoutX="25" layoutY="25"
+          spacing="25"
+          prefWidth="800"
+          prefHeight="850">
 
-            <!-- Tiêu đề -->
-            <VBox alignment="CENTER" spacing="10">
-                <Label text="— DUYỆT TÀI LIỆU —" styleClass="title"/>
-                <Label text="Xác nhận hoặc từ chối tài liệu được gửi đến hệ thống"
-                       styleClass="subtitle"/>
-            </VBox>
-
-            <!-- Khu vực danh sách tài liệu -->
-            <ScrollPane fitToWidth="true"
-                        prefHeight="700"
-                        styleClass="scroll-box">
-                <content>
-                    <VBox fx:id="documentList"
-                          spacing="20"
-                          alignment="TOP_CENTER"
-                          prefWidth="700"
-                          styleClass="doc-list"/>
-                </content>
-            </ScrollPane>
+        <!-- Tiêu đề -->
+        <VBox alignment="CENTER" spacing="10">
+            <Label text="— DUYỆT TÀI LIỆU —" styleClass="title"/>
+            <Label text="Xác nhận hoặc từ chối tài liệu được gửi đến hệ thống"
+                   styleClass="subtitle"/>
         </VBox>
-    </children>
+
+        <!-- Khu vực danh sách tài liệu -->
+        <ScrollPane fitToWidth="true"
+                    prefHeight="700"
+                    styleClass="scroll-box">
+            <content>
+                <VBox fx:id="documentList"
+                      spacing="20"
+                      alignment="TOP_CENTER"
+                      prefWidth="700"
+                      styleClass="doc-list"/>
+            </content>
+        </ScrollPane>
+    </VBox>
 </AnchorPane>
