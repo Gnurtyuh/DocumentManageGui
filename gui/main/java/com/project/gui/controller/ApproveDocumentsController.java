@@ -91,13 +91,13 @@ public class ApproveDocumentsController {
         buttons.setAlignment(Pos.CENTER);
 
         // Thêm nút theo trạng thái + quyền
-        if (logDto.getStatus().equals("PENDING") && userDto.getRoleLevel() == 2) {
+        if (logDto.getStatus().equals("CHỜ XÉT DUYỆT") && userDto.getRoleLevel() == 2) {
             logDto.setAction("TRƯỞNG PHÒNG PHÊ DUYỆT");
             buttons.getChildren().addAll(
-                    createActionButton("Xác nhận", "UPDATE", logDto),
+                    createActionButton("Xác nhận", "ĐÃ ĐƯỢC PHÊ DUYỆT", logDto),
                     createActionButton("Từ chối", "TỪ CHỐI", logDto)
             );
-        } else if (logDto.getStatus().equals("UPDATE") && userDto.getRoleLevel() == 1) {
+        } else if (logDto.getStatus().equals("ĐÃ ĐƯỢC PHÊ DUYỆT") && userDto.getRoleLevel() == 1) {
             logDto.setAction("HOÀN THÀNH");
             buttons.getChildren().addAll(
                     createActionButton("Xác nhận", "XÉT DUYỆT THÀNH CÔNG", logDto),
