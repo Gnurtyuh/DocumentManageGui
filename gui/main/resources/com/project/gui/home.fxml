@@ -154,11 +154,10 @@
                   layoutY="30.0"
                   prefWidth="880">
                <children>
-                  <Label text="Hello ! JavaFX Developers"
+                  <Label fx:id="titleLabel"
                          styleClass="label-title" />
-                  <Label text="Never put off till tomorrow what can be done today !"
+                  <Label fx:id="subtitleLabel"
                          styleClass="label-subtitle" />
-                  
                   <!-- 🔹 Khu vực nội dung thay đổi -->
                   <AnchorPane fx:id="contentArea"
                               prefHeight="600.0"

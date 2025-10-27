@@ -90,7 +90,7 @@ public class ApproveDocumentsController {
         HBox buttons = new HBox(20);
         buttons.setAlignment(Pos.CENTER);
 
-        // Thêm nút theo trạng thái + quyền
+
         if (logDto.getStatus().equals("CHỜ XÉT DUYỆT") && userDto.getRoleLevel() == 2) {
             logDto.setAction("TRƯỞNG PHÒNG PHÊ DUYỆT");
             buttons.getChildren().addAll(
