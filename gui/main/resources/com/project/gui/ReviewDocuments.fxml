@@ -6,6 +6,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="contentArea"
             fx:controller="com.project.gui.controller.ReviewDocumentsController"
             prefWidth="900" prefHeight="850"
             stylesheets="@review_documents.css">
@@ -17,7 +18,11 @@
           AnchorPane.rightAnchor="20">
 
         <Label text="DANH SÁCH TÀI LIỆU" styleClass="title-label"/>
-
+        <HBox alignment="CENTER" spacing="10">
+            <TextField fx:id="searchField" promptText="🔍 Tìm kiếm theo tên tài liệu..." prefWidth="400"/>
+            <Button text="Tìm kiếm" fx:id="btnSearch" styleClass="search-button"/>
+            <Button text="Làm mới" fx:id="btnRefresh" styleClass="refresh-button"/>
+        </HBox>
         <!-- Khu vực danh sách tài liệu có cuộn -->
         <ScrollPane fitToWidth="true"
                     prefHeight="700"

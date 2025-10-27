@@ -7,66 +7,58 @@
 <?import javafx.scene.image.*?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.project.gui.controller.ReceiveDataController"
-            stylesheets="@SendData.css" prefWidth="850" prefHeight="900">
 
-    <VBox alignment="TOP_CENTER" spacing="10" prefWidth="800" layoutY="30">
+                stylesheets="@SendData.css" prefWidth="850" prefHeight="900">
 
-        <!-- Tiêu đề -->
-        <Label text="Giải Mã" styleClass="title"/>
+        <VBox alignment="TOP_CENTER" spacing="10" prefWidth="800" layoutY="30">
 
-        <Label text="Giải mã tập tin dễ dàng, an toàn và nhanh chóng tại phía máy khách"
-               styleClass="subtitle"/>
+            <!-- Tiêu đề -->
+            <Label text="Giải Mã" styleClass="title"/>
 
-        <!-- Tabs -->
-        <HBox alignment="CENTER" spacing="10">
-            <Button text="Mã Hóa" styleClass="btn-secondary"/>
-            <Button text="Giải Mã" styleClass="btn-primary"/>
-        </HBox>
+            <Label text="Giải mã tập tin dễ dàng, an toàn và nhanh chóng tại phía máy khách"
+                   styleClass="subtitle"/>
 
-        <!-- 1. Chọn tập tin -->
-       <!-- 1. Chọn tập tin -->
-<VBox spacing="10" styleClass="section">
-    <Label text="1  Chọn tập tin để giải mã" styleClass="section-title"/>
-    <VBox spacing="10" alignment="CENTER" styleClass="file-box">
-        <Button text="Duyệt Tập Tin" styleClass="btn-file" fx:id="btnFileBrowse" onAction="#handleBrowseFile"/>
-        <Label text="Chưa chọn tập tin" fx:id="lblFilePath" styleClass="note"/>
-    </VBox>
-</VBox>
+            <!-- Tabs -->
+            <HBox alignment="CENTER" spacing="10">
+                <Button text="Mã Hóa" styleClass="btn-secondary"/>
+                <Button text="Giải Mã" styleClass="btn-primary"/>
+            </HBox>
 
-<!-- 2. Nhập mật khẩu -->
-<!-- 2. Nhập mật khẩu -->
-<VBox spacing="10" styleClass="section">
-    <Label text="2  Nhập mật khẩu " styleClass="section-title"/>
-    <HBox spacing="5" alignment="CENTER_LEFT">
-        <!-- PasswordField (mặc định ẩn mật khẩu) -->
-        <PasswordField fx:id="passwordField" promptText="Nhập mật khẩu" prefWidth="260"/>
-
-        <!-- TextField hiển thị mật khẩu khi bật -->
-        <TextField fx:id="passwordVisibleField" promptText="Nhập mật khẩu" prefWidth="260" />
-
-        <!-- Nút con mắt: onAction gọi hàm toggle -->
-        <Button fx:id="btnEye" text="👁" styleClass="btn-eye" onAction="#handleTogglePassword"/>
-    </HBox>
-</VBox>
+            <VBox spacing="10" styleClass="section">
+                <Label text="1  Chọn tập tin để giải mã" styleClass="section-title"/>
+                <VBox spacing="10" alignment="CENTER" styleClass="file-box">
+                    <Button text="Duyệt Tập Tin" styleClass="btn-file" fx:id="btnFileBrowse" onAction="#handleBrowseFile"/>
+                    <Label text="Chưa chọn tập tin" fx:id="lblFilePath" styleClass="note"/>
+                </VBox>
+            </VBox>
 
 
-<!-- 3. Tải tập tin giải mã -->
-<VBox spacing="10" styleClass="section">
-    <Label text="3  Tải tập tin " styleClass="section-title"/>
-    <Button text="TẢI VỀ" styleClass="btn-download" fx:id="btnDownload" onAction="#handleDownload"/>
-</VBox>
+            <VBox spacing="10" styleClass="section">
+                <Label text="2  Nhập mật khẩu " styleClass="section-title"/>
+                <HBox spacing="5" alignment="CENTER_LEFT">
+                    <!-- PasswordField (mặc định ẩn mật khẩu) -->
+                    <PasswordField fx:id="passwordField" promptText="Nhập mật khẩu" prefWidth="260"/>
 
-<!-- 4. Nhận dữ liệu -->
-<VBox spacing="10" styleClass="section">
-    <Label text="4  Nhận dữ liệu" styleClass="section-title"/>
-    <TextArea fx:id="txtNote"
-                      promptText="Nhập ghi chú của bạn (tùy chọn)"
-                      prefRowCount="1"
-                      wrapText="true"
-                      styleClass="note-box"/>
+                    <!-- TextField hiển thị mật khẩu khi bật -->
+                    <TextField fx:id="passwordVisibleField" promptText="Nhập mật khẩu" prefWidth="260" />
 
-    <Button text="NHẬN DỮ LIỆU" styleClass="btn-send" fx:id="btnReceive" onAction="#handleReceiveData"/>
-</VBox>
+                    <!-- Nút con mắt: onAction gọi hàm toggle -->
+                    <Button fx:id="btnEye" text="👁" styleClass="btn-eye" onAction="#handleTogglePassword"/>
+                </HBox>
+            </VBox>
 
-    </VBox>
+
+            <VBox spacing="10" styleClass="section">
+                <Label text="3  Tải tập tin " styleClass="section-title"/>
+                <Button text="TẢI VỀ" styleClass="btn-download" fx:id="btnDownload" onAction="#handleDownload"/>
+            </VBox>
+
+            <VBox spacing="10" styleClass="section">
+                <Label text="4 Xem tình trạng duyệt" styleClass="section-title"/>
+
+
+                <Button text="Xem tình trạng duyệt" styleClass="btn-send" fx:id="btnReceive" onAction="#handleReceiveData"/>
+            </VBox>
+
+        </VBox>
 </AnchorPane>

@@ -53,10 +53,7 @@ public class PrimaryController {
         Parent fxml = loader.load();
 
         contentArea.getChildren().setAll(fxml);
-
         ReceiveDataController receiveController = loader.getController();
-
-
         receiveController.setEncryptedFile(documentId, fileName);
     }
 
@@ -66,11 +63,8 @@ public class PrimaryController {
         }
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/project/gui/ApproveDocuments.fxml"));
         Parent fxml = loader.load(); // load FXML
-
         contentArea.getChildren().setAll(fxml);
-
         ApproveDocumentsController approveDocumentsController = loader.getController();
-
         approveDocumentsController.setDocumentId(documentId);
 
     }

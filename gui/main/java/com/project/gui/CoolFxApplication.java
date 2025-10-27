@@ -16,7 +16,7 @@ public class CoolFxApplication extends Application {
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("Login")); // 👈 CHỈ CẦN ĐỔI THÀNH "home"
         stage.setScene(scene);
-        stage.setTitle("Document Manager FX");
+        stage.setTitle("Document Manager");
         stage.setResizable(false);
         stage.show();
     }

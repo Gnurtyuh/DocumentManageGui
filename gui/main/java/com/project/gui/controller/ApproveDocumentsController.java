@@ -21,9 +21,15 @@ import java.util.stream.Collectors;
 
 public class ApproveDocumentsController {
 
-    @FXML private VBox documentList;
+    public AnchorPane contentArea;
+    @FXML
+    private VBox documentList;
     private final UserDto userDto = UserServiceGui.getUserByUsername(SessionManager.getUsername());
     private Long documentId;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private Button btnSearch, btnRefresh;
 
     public void setDocumentId(Long documentId) {
         this.documentId = documentId;
@@ -32,6 +38,8 @@ public class ApproveDocumentsController {
     @FXML
     public void initialize() {
         Platform.runLater(this::loadLogs);
+        btnSearch.setOnAction(e -> searchDocuments());
+        btnRefresh.setOnAction(e -> loadLogs());
     }
 
     private void loadLogs() {
@@ -80,16 +88,15 @@ public class ApproveDocumentsController {
         addGridRow(grid, "Thời gian gửi:", convertTime(logDto.getCreatedAt()));
         addGridRow(grid, "Thời gian hoàn thành:", completed);
         addGridRow(grid, "Phòng ban:", dept.getDepartmentName() + " - " + dept.getDivision());
-        addGridRow(grid, "Người thực hiện:", user.getUsername());
+        addGridRow(grid, "Người thực hiện:", user.getFullName());
 
-        // Nút chung
+        // Nút xem
         Button viewBtn = new Button("Xem");
         viewBtn.getStyleClass().add("btn-view");
         viewBtn.setOnAction(e -> openDocument(doc.getDocumentId(), doc.getFilePath()));
 
         HBox buttons = new HBox(20);
         buttons.setAlignment(Pos.CENTER);
-
 
         if (logDto.getStatus().equals("CHỜ XÉT DUYỆT") && userDto.getRoleLevel() == 2) {
             logDto.setAction("TRƯỞNG PHÒNG PHÊ DUYỆT");
@@ -121,7 +128,7 @@ public class ApproveDocumentsController {
         btn.setOnAction(e -> {
             LogServiceGui.updateLog(log.getLogId(), log, status);
             showAlert("Thao tác " + text.toLowerCase() + " thành công!");
-            loadLogs(); // refresh lại UI
+            loadLogs();
         });
         return btn;
     }
@@ -131,19 +138,21 @@ public class ApproveDocumentsController {
             showAlert("Thiếu thông tin tài liệu!");
             return;
         }
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/project/gui/home.fxml"));
             Parent root = loader.load();
+
             PrimaryController primaryController = loader.getController();
             primaryController.handleReceive(documentId, fileName);
 
             Stage stage = (Stage) documentList.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Màn hình nhận dữ liệu");
-            stage.setHeight(939);
+            stage.setScene(new Scene(root, 1253, 939));
+            stage.setTitle("Document Manager");
             stage.show();
+
         } catch (IOException e) {
-            showAlert("Lỗi khi mở tài liệu: " + e.getMessage());
+            showAlert("❌ Lỗi khi mở tài liệu: " + e.getMessage());
         }
     }
 
@@ -159,4 +168,24 @@ public class ApproveDocumentsController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    private void searchDocuments() {
+        String keyword = searchField.getText().toLowerCase().trim();
+        List<LogDto> logs = fetchLogsByRole();
+
+        List<LogDto> filtered = logs.stream()
+                .filter(l ->
+                        (l.getDocumentDto() != null && l.getDocumentDto().getFilePath().toLowerCase().contains(keyword)) ||
+                                (l.getDescription() != null && l.getDescription().toLowerCase().contains(keyword)) ||
+                                (l.getAction() != null && l.getAction().toLowerCase().contains(keyword)) ||
+                                (l.getDepartmentDto() != null && l.getDepartmentDto().getDepartmentName().toLowerCase().contains(keyword)) ||
+                                (l.getUserDto() != null && l.getUserDto().getUsername().toLowerCase().contains(keyword)) ||
+                                (l.getStatus() != null && l.getStatus().toLowerCase().contains(keyword))
+                )
+                .toList();
+
+        documentList.getChildren().clear();
+        filtered.forEach(this::renderLogCard);
+    }
+
 }

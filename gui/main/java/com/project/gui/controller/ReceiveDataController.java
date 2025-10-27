@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -22,6 +23,7 @@ import java.util.Arrays;
 public class ReceiveDataController {
 
     @FXML public Button btnReceive;
+    public AnchorPane contentArea;
     @FXML private Button btnFileBrowse;
     @FXML private Button btnDownload;
     @FXML private Button btnEye;
@@ -142,7 +144,7 @@ public class ReceiveDataController {
 
         stage.setHeight(939);
         stage.setScene(new Scene(root));
-        stage.setTitle("Màn hình nhận dữ liệu");
+        stage.setTitle("Document Manager");
         stage.show();
     }
 

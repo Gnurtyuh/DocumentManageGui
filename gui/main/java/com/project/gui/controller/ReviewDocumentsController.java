@@ -11,12 +11,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,30 +21,37 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ReviewDocumentsController {
 
+    public AnchorPane contentArea;
+    public TextField searchField;
+    public Button btnSearch;
+    public Button btnRefresh;
     @FXML
     private VBox documentContainer;
+
+    private List<DocumentDto> allDocuments;
 
     @FXML
     public void initialize() {
         UserDto currentUser = UserServiceGui.getUserByUsername(SessionManager.getUsername());
-        List<DocumentDto> documents = fetchDocumentsByRole(currentUser);
+        allDocuments = fetchDocumentsByRole(currentUser);
 
-        // Nếu không có tài liệu nào
-        if (documents == null || documents.isEmpty()) {
+        if (allDocuments == null || allDocuments.isEmpty()) {
             Label emptyLabel = new Label("Không có tài liệu nào để xem.");
             emptyLabel.getStyleClass().add("empty-label");
             documentContainer.getChildren().add(emptyLabel);
             return;
         }
 
-        // Hiển thị danh sách tài liệu
-        documents.forEach(doc -> documentContainer.getChildren().add(createDocumentBox(doc)));
+        showDocuments(allDocuments);
+
+        btnSearch.setOnAction(e -> searchDocuments());
+        btnRefresh.setOnAction(e -> showDocuments(allDocuments));
     }
 
-    /** 🔹 Lấy danh sách tài liệu tùy theo vai trò người dùng */
     private List<DocumentDto> fetchDocumentsByRole(UserDto user) {
         return switch (user.getRoleLevel()) {
             case 3 -> DocumentServiceGui.getDocumentByUser(SessionManager.getUsername());
@@ -58,7 +61,32 @@ public class ReviewDocumentsController {
         };
     }
 
-    /** 🔹 Tạo một khung hiển thị thông tin tài liệu */
+    private void showDocuments(List<DocumentDto> documents) {
+        documentContainer.getChildren().clear();
+        documents.forEach(doc -> documentContainer.getChildren().add(createDocumentBox(doc)));
+    }
+
+    private void searchDocuments() {
+        String keyword = searchField.getText().toLowerCase().trim();
+
+        if (keyword.isEmpty()) {
+            showDocuments(allDocuments);
+            return;
+        }
+
+        List<DocumentDto> filtered = allDocuments.stream()
+                .filter(d ->
+                        (d.getTitle() != null && d.getTitle().toLowerCase().contains(keyword)) ||
+                                (d.getDescription() != null && d.getDescription().toLowerCase().contains(keyword)) ||
+                                (d.getFilePath() != null && d.getFilePath().toLowerCase().contains(keyword)) ||
+                                (d.getUserDto() != null && d.getUserDto().getUsername().toLowerCase().contains(keyword)) ||
+                                (d.getDepartmentDto() != null && d.getDepartmentDto().getDepartmentName().toLowerCase().contains(keyword))
+                )
+                .collect(Collectors.toList());
+
+        showDocuments(filtered);
+    }
+
     private VBox createDocumentBox(DocumentDto document) {
         VBox box = new VBox(10);
         box.getStyleClass().add("document-box");
@@ -69,7 +97,7 @@ public class ReviewDocumentsController {
         grid.setVgap(8);
 
         addRow(grid, 0, "Tên tài liệu:", document.getTitle());
-        addRow(grid, 1, "Người gửi:", document.getUserDto().getUsername());
+        addRow(grid, 1, "Người gửi:", document.getUserDto().getFullName());
         addRow(grid, 2, "Ngày gửi:", formatTimestamp(document.getUploadDate()));
         addRow(grid, 3, "Trạng thái:", document.getDescription());
         addRow(grid, 4, "File tài liệu:", document.getFilePath());
@@ -87,23 +115,20 @@ public class ReviewDocumentsController {
         return box;
     }
 
-    /** 🔹 Hàm phụ trợ để thêm một dòng vào GridPane */
     private void addRow(GridPane grid, int rowIndex, String label, String value) {
         grid.add(new Label(label), 0, rowIndex);
         grid.add(new Label(value != null ? value : "—"), 1, rowIndex);
     }
 
-    /** 🔹 Chuyển đổi Timestamp sang định dạng dễ đọc */
     private String formatTimestamp(Timestamp timestamp) {
         if (timestamp == null) return "Không xác định";
         OffsetDateTime odt = timestamp.toInstant().atOffset(ZoneId.systemDefault().getRules().getOffset(timestamp.toInstant()));
         return odt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     }
 
-    /** 🔹 Mở giao diện xem tài liệu */
     private void openDocument(DocumentDto document) {
         if (document.getDocumentId() == null || document.getFilePath() == null) {
-            showAlert("⚠️ Bạn cần chọn file hợp lệ trước!");
+            showAlert("⚠️!");
             return;
         }
 
@@ -111,12 +136,14 @@ public class ReviewDocumentsController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/project/gui/home.fxml"));
             Parent root = loader.load();
 
+            // Gửi dữ liệu sang controller khác
             PrimaryController primaryController = loader.getController();
             primaryController.handleReceive(document.getDocumentId(), document.getFilePath());
 
+            // Chuyển sang giao diện mới (Stage)
             Stage stage = (Stage) documentContainer.getScene().getWindow();
             stage.setScene(new Scene(root, 1253, 939));
-            stage.setTitle("Màn hình nhận dữ liệu");
+            stage.setTitle("Document Manager");
             stage.show();
 
         } catch (IOException e) {
@@ -124,7 +151,6 @@ public class ReviewDocumentsController {
         }
     }
 
-    /** 🔹 Hiển thị cảnh báo đơn giản */
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Thông báo");
