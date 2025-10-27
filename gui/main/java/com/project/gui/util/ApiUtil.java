@@ -166,7 +166,7 @@ public class ApiUtil {
             String json = mapper.writeValueAsString(authentications); // ✅ Chuyển object sang JSON
             System.out.println("➡️ JSON gửi đi: " + json);
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url + "/user/auth"))
+                    .uri(URI.create(url+ "/user/auth"))
                     .header("Content-Type", "application/json; charset=utf-8")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();

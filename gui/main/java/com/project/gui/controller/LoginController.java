@@ -79,7 +79,7 @@ public class LoginController {
                 stage.show();
 
             } else {
-                lblError.setText("Sai email hoặc mật khẩu!");
+                lblError.setText("Sai tài khoản hoặc mật khẩu!");
             }
 
         } catch (Exception e) {

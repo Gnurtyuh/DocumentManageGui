@@ -56,12 +56,10 @@ public class ApproveDocumentsController {
     private List<LogDto> fetchLogsByRole() {
         int role = userDto.getRoleLevel();
         String username = SessionManager.getUsername();
-        String deptName = userDto.getDepartmentDto().getDepartmentName();
         Long deptId = userDto.getDepartmentDto().getDepartmentId();
 
         return switch (role) {
-            case 1 -> LogServiceGui.getLogByDepartmentName(deptName);
-            case 2 -> LogServiceGui.getLogByDepartmentId(deptId);
+            case 1, 2 -> LogServiceGui.getLogByDepartmentId(deptId);
             default -> LogServiceGui.getLogByUser(username);
         };
     }
